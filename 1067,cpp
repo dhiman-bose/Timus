@@ -1,0 +1,57 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct node{
+    
+    map<string, node*>sub;
+};
+node* root=new node();
+
+
+void Dir( string& path) {
+    node* current = root;
+    size_t start = 0;//unsigned int,platform dependent
+    size_t end = path.find('\\');
+
+    while (true) {
+        // Extract the directory name between positions 'start' and 'end'
+        string segment = path.substr(start, end - start);//extracts a portion of the string starting at index pos with a specific length len=end - start which calculates the exact number of characters between two delimiters (the backslash \). 
+        //cout<<"Segment "<<segment<<endl;
+        if (current->sub.find(segment) == current->sub.end()) {
+            current->sub[segment] = new node();
+        }
+        current = current->sub[segment];
+
+        // If no more backslashes are found, we've processed the last segment
+        if (end == string::npos) break;
+
+        // Move 'start' to the character after the backslash
+        start = end + 1;
+        end = path.find('\\', start);
+    }
+}
+void print(node* root,int depth=0){
+    for(auto& pair:root->sub){
+        for(int i=0;i<depth;i++)cout<<" ";
+        cout<<pair.first<<endl;
+        print(pair.second,depth+1);
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+ 
+ 
+  for (int i = 0; i < n; i++) {
+        string path;
+        cin >> path;
+        Dir(path);
+    }
+ 
+    // Print the entire directory tree
+    //printTree(&root);
+    print(root, 0);
+    return 0;
+}
